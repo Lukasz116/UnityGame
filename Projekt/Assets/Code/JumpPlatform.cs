@@ -12,7 +12,7 @@ public class JumpPlatform : MonoBehaviour
 
     public AudioClip JumpSound;
 
-	/// Ustalenie JumpMagnitude
+	/// Ustalenie JumpMagnitude i odtworzenie dźwięku podczas odbicia się od platformy.
     public void ControllerEnter2D(CharacterController2D controller)
     {
         if (JumpSound != null)

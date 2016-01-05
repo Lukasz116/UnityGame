@@ -14,6 +14,9 @@ public class PointStar : MonoBehaviour, IPlayerRespawnListener
     /// </summary>
     public int PointsToAdd = 10;
 
+    /// <summary>
+    /// Dźwięk odtwarzany po zebraniu gwiazdki.
+    /// </summary>
     public AudioClip HitStarSound;
 
     /// <summary>
@@ -25,13 +28,18 @@ public class PointStar : MonoBehaviour, IPlayerRespawnListener
         if (other.GetComponent<Player>() == null)
             return;
 
+        /// Odtworzenie efektu dźwiękowego.
         if (HitStarSound != null)
             AudioSource.PlayClipAtPoint(HitStarSound, transform.position);
 
+        /// Dodanie punktów.
         GameManager.Instance.AddPoints(PointsToAdd);
+
+        /// Inicjowanie efektu graficznego.
         Instantiate(Effect, transform.position, transform.rotation);
 
         gameObject.SetActive(false);
+        /// Wyświetlenie komunikatu tekstowego.
         FloatingText.Show(string.Format("+{0}!", PointsToAdd), "PointStarText", new FromWorldPointTextPositioner(Camera.main, transform.position, 1.5f, 50)); /// metoda wyswietli tekst przez 1,5s, bedzie on sie poruszal z predkoscia 50 pixeli na sekunde
     }
 
