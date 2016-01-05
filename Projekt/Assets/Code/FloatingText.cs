@@ -1,63 +1,39 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
-/// <summary>
-/// Klasa odpowiedzialna za wyświetlanie na ekranie gry tekstu
-/// informującego o różnych zdarzeniach występujących w czasie rozgrywki.
-/// </summary>
+
 class FloatingText : MonoBehaviour
 {
-    /// <summary>
-    /// Załadowanie GUISkin dla interfejsu gry w Unity.
-    /// </summary>
-    private static readonly GUISkin Skin = Resources.Load<GUISkin>("GameSkin");
- 
+
+    private static readonly GUISkin Skin = Resources.Load<GUISkin>("GameSkin"); ///ładujemy opcje dla textu z unity 
     public static FloatingText Show(string text, string style, IFloatingTextPositioner positioner)
     {
-        /// Stworzenie nowego obiektu gry.
-        var go = new GameObject("Floating Text");
+        var go = new GameObject("Floating Text"); ///tworzymy nowy obiekt gry
         var floatingText = go.AddComponent<FloatingText>();
-        /// Ustawienie stylu tekstu.
-        floatingText.Style = Skin.GetStyle(style);
-        /// Ustawienie miejsca, w którym wyświetlony zostanie tekst.
-        floatingText._positioner = positioner;
-        /// Ustawienie treści tekstu, która zostanie pokazany.
-        floatingText._content = new GUIContent(text);
-
+        floatingText.Style = Skin.GetStyle(style); /// styl naszego tekstu
+        floatingText._positioner = positioner;   /// miejsce w ktorym tekst sie pokaze
+        floatingText._content = new GUIContent(text);  /// tresc ktora zaostanie pozakazana
         return floatingText;
+
     }
+    private GUIContent _content; ///tworzymy zmienna zawierajaca tekst
+    private IFloatingTextPositioner _positioner; /// tworzymy zmienna odpowiedzialna za polozenie napisu
 
-    /// <summary>
-    /// Pole interfejsu użytkownika zawierające tekst.
-    /// </summary>
-    private GUIContent _content;
-    /// <summary>
-    /// Zmienna odpowiedzialna za położenie napisu.
-    /// </summary>
-    private IFloatingTextPositioner _positioner;
+    public string Text { get { return _content.text; } set { _content.text = value; } } /// tworzymy wlasciwosc tekst
+    public GUIStyle Style { get; set; } /// tworzymy wlasciwosc styl
 
-    /// Wyświetlany tekst.
-    public string Text { get { return _content.text; } set { _content.text = value; } }
-    /// Zmienna stylu interfejsu użytkownika.                                                                                    
-    public GUIStyle Style { get; set; }
-
-    /// <summary>
-    /// Metoda pokazująca tekst na ekranie oraz usuwająca go.
-    /// </summary>
     public void OnGUI()
     {
         var position = new Vector2();
-        /// Obliczenie wielkości tekstu.
-        var contentSize = Style.CalcSize(_content);
-        /// Jeśli wartość zmiennej wskazującej, gdzie ma być wyświetlony 
-        /// tekst jest pusta, niszczony jest obiekt tekstu.
-        if (!_positioner.GetPosition(ref position, _content, contentSize)) 
+        var contentSize = Style.CalcSize(_content); ///obliczamy wielkosc tekstu
+        if (!_positioner.GetPosition(ref position, _content, contentSize)) ///pobieramy zmienna gdzie ma byc pokazany tekst jesli jest wartosc false niszczymy objekt(tekst)
         {
-            /// Usunięcie tekstu.
-            Destroy(gameObject);
+
+            Destroy(gameObject);///usuniecie tekstu
             return;
         }
-        /// Metoda tworząca tekst na ekranie.
-        GUI.Label(new Rect(position.x, position.y, contentSize.x, contentSize.y), _content, Style);
+
+        GUI.Label(new Rect(position.x, position.y, contentSize.x, contentSize.y), _content, Style); ///metoda tworzaca tekst na ekranie
     }
 }
 

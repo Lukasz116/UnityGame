@@ -37,33 +37,24 @@ public class Player : MonoBehaviour, ITakeDamage
     /// </summary>
     public GameObject OuchEffect;
 	/// <summary>
-	/// Pocisk.
+	/// Piła
 	/// </summary>
 	public Projectile Projectile;
 	/// <summary>
-	/// Częstotliwość, z którą strzela gracz.
+	/// Częstotliwość z którą strzela
 	/// </summary>
 	public float FireRate;
 	/// <summary>
-	/// Lokalizacja pocisku.
+	/// Lokalizacja Piły.
 	/// </summary>
 	public Transform ProjectileFireLocation;
 	/// <summary>
-	/// Efekt graficzny wystrzelenia pocisku.
+	/// Fire projectile effect.
 	/// </summary>
 	public GameObject FireProjectileEffect;
 
-    /// <summary>
-    /// Dźwięk odtwarzany po trafieniu gracza przez wroga.
-    /// </summary>
     public AudioClip PlayerHitSound;
-    /// <summary>
-    /// Dźwięk odtwarzany po wystrzeleniu pocisku przez gracza.
-    /// </summary>
     public AudioClip PlayerShootSound;
-    /// <summary>
-    /// Dźwięk odtwarzany po zebraniu apteczki przez gracza.
-    /// </summary>
     public AudioClip PlayerHealthSound;
 
     /// <summary>
@@ -98,9 +89,7 @@ public class Player : MonoBehaviour, ITakeDamage
 	/// </summary>
     public void Update()
     {
-		/// Aktualizacja czasu przeładowywania broni.
-        _canFireIn -= Time.deltaTime;
-
+		_canFireIn -= Time.deltaTime;
         if (!IsDead)
             HandleInput();
 
@@ -112,10 +101,6 @@ public class Player : MonoBehaviour, ITakeDamage
             _controller.SetHorizontalForce(Mathf.Lerp(_controller.Velocity.x, _normalizedHorizontalSpeed * MaxSpeed, Time.deltaTime * movementFactor));
     }
 
-    /// <summary>
-    /// Metoda uruchamiana po przejściu danego poziomu gry.
-    /// Deaktywuje ona BoxCollider2D i ruch gracza.
-    /// </summary>
     public void FinishLevel()
     {
         enabled = false;
@@ -172,22 +157,20 @@ public class Player : MonoBehaviour, ITakeDamage
             LevelManager.Instance.KillPlayer();
     }
 
-    /// <summary>
-    /// Dodanie punktów zdrowia po zebraniu apteczki.
-    /// </summary>
-    /// <param name="health"></param>
-    /// <param name="instagator"></param>
+
+
     public void GiveHealth(int health, GameObject instagator)
     {
         AudioSource.PlayClipAtPoint(PlayerHealthSound, transform.position);
         FloatingText.Show(string.Format("+{0}!", health), "PlayerGotHealthText", new FromWorldPointTextPositioner(Camera.main, transform.position, 2f, 60f));
-        Health = Mathf.Min(Health + health, MaxHealth);
+        Health += Mathf.Min(Health + health, MaxHealth);
     }
+
+
 
 	/// <summary>
     /// Obsluga interakcji gracza (nacisniecia klawisza A lub D), umozliwiajaca obrot.
-    /// Nacisniecie spacji wykonuje skok. Kliknięcie myszką w obszarze gry powoduje
-    /// wystrzelenie pocisku przez gracza.
+    /// Nacisniecie spacji wykonuje skok.
 	/// </summary>
     public void HandleInput()
     {
@@ -216,36 +199,26 @@ public class Player : MonoBehaviour, ITakeDamage
 						FireProjectile ();
     }
 
-    /// <summary>
-    /// Metoda odpowiadająca za wystrzelenie pocisku przez gracza.
-    /// </summary>
 	private void FireProjectile()
 	{
-		/// Sprawdzenie, czy upłynął czas ładowania broni.
-        if (_canFireIn > 0)
+		if (_canFireIn > 0)
 						return;
 
-        /// Ustawienie obiektu efektu wystrzału i umiejscowanie go w grze.
-		if (FireProjectileEffect != null) 
-        {
-			var effect = (GameObject) Instantiate(FireProjectileEffect, ProjectileFireLocation.position, ProjectileFireLocation.rotation);
-			effect.transform.parent = transform;
-		}
+		if (FireProjectileEffect != null) {
+						var effect = (GameObject) Instantiate(FireProjectileEffect, ProjectileFireLocation.position, ProjectileFireLocation.rotation);
+						effect.transform.parent = transform;
+				}
 
-        /// Ustalenie kierunku strzału na podstawie 
-        /// aktualnego zwrotu postaci gracza.
 		var direction = _isFacingRight ? Vector2.right : -Vector2.right;
 
-        /// Oddanie strzału.
 		var projectile = (Projectile) Instantiate(Projectile, ProjectileFireLocation.position, ProjectileFireLocation.rotation);
 		projectile.Initialize(gameObject, direction, _controller.Velocity);
 
-        /// Ustawienie, zmniejszanej w metodzie Update, wartości częstotliwości oddawania strzałów przez gracza.
 		_canFireIn = FireRate;
 
         AudioSource.PlayClipAtPoint(PlayerShootSound, transform.position);
-	}
 
+	}
 	/// <summary>
     /// Obrocenie gracza w poziomie.
 	/// </summary>
